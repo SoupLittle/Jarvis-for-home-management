@@ -1,5 +1,6 @@
 import tkinter as tk
 from time import strftime
+import threading
 import speech_recognition as sr
 import pyttsx3
 
@@ -33,6 +34,15 @@ def listen():
             print(f"Could not request results from Google Speech Recognition service; {e}")
             return None
 
+def animate_background():
+    for _ in range(5):  # Change the background color 5 times
+        root.config(bg='lightblue')  # Change the background color to lightblue
+        root.update()
+        root.after(500)  # Pause for 500 milliseconds
+        root.config(bg='white')  # Change the background color back to white
+        root.update()
+        root.after(500)  # Pause for 500 milliseconds
+
 def main():
     while True:
         command = listen()
@@ -40,6 +50,8 @@ def main():
             if "hey jarvis" in command:
                 speak("How can I help you today?")
                 # Implement your logic for handling user commands here
+                # Trigger the background animation when Jarvis speaks
+                threading.Thread(target=animate_background).start()
 
 if __name__ == "__main__":
     # Create the main window
@@ -59,5 +71,5 @@ if __name__ == "__main__":
     date()
 
     # Start the main loop
-    root.after(0, main)  # Run main function after 0 milliseconds
+    root.after(0, main)  # Run the main function after 0 milliseconds
     root.mainloop()
