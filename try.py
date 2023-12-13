@@ -3,15 +3,16 @@ from time import strftime
 import threading
 import speech_recognition as sr
 import pyttsx3
+from transformers import pipeline
 
 def time():
-    string = strftime('%H:%M:%S %p')
-    time_label.config(text=string)
+    current_time = strftime('%H:%M:%S %p')
+    time_label.config(text=current_time)
     time_label.after(1000, time)  # Update every 1000 milliseconds (1 second)
 
 def date():
-    string = strftime('%B %d, %Y')
-    date_label.config(text=string)
+    current_date = strftime('%B %d, %Y')
+    date_label.config(text=current_date)
 
 def speak(text):
     engine = pyttsx3.init()
@@ -34,24 +35,29 @@ def listen():
             print(f"Could not request results from Google Speech Recognition service; {e}")
             return None
 
-def animate_background():
-    for _ in range(5):  # Change the background color 5 times
-        root.config(bg='lightblue')  # Change the background color to lightblue
-        root.update()
-        root.after(500)  # Pause for 500 milliseconds
-        root.config(bg='white')  # Change the background color back to white
-        root.update()
-        root.after(500)  # Pause for 500 milliseconds
+def answer_question(question):
+    qa_pipeline = pipeline("question-answering")
+    answer = qa_pipeline(question=question, context="Placeholder context. You can replace this.")
+    return answer['answer']
+
+def handle_command(command):
+    if "hey jarvis" in command:
+        speak("How can I help you today?")
+        user_question = listen()
+        if user_question:
+            if "what is the time" in user_question:
+                current_time = strftime('%H:%M:%S %p')
+                speak(f"The current time is {current_time}")
+            else:
+                # For other questions, use the question-answering pipeline
+                answer = answer_question(user_question)
+                speak(answer)
 
 def main():
     while True:
         command = listen()
         if command:
-            if "hey jarvis" in command:
-                speak("How can I help you today?")
-                # Implement your logic for handling user commands here
-                # Trigger the background animation when Jarvis speaks
-                threading.Thread(target=animate_background).start()
+            handle_command(command)
 
 if __name__ == "__main__":
     # Create the main window
