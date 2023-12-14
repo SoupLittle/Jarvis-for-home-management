@@ -24,15 +24,15 @@ def listen():
     with sr.Microphone() as source:
         print("Listening for 'Hey Jarvis'...")
         try:
-            audio = recognizer.listen(source, timeout=5)
+            audio = recognizer.listen(source, timeout=5, phrase_time_limit=5)
             command = recognizer.recognize_google(audio).lower()
             print("You said:", command)
             return command
         except sr.UnknownValueError:
-            print("Sorry, could not understand audio.")
+            speak("Sorry, could not understand audio.")
             return None
         except sr.RequestError as e:
-            print(f"Could not request results from Google Speech Recognition service; {e}")
+            speak(f"Could not request results from Google Speech Recognition service; {e}")
             return None
 
 def answer_question(question):
@@ -48,6 +48,11 @@ def handle_command(command):
             if "what is the time" in user_question:
                 current_time = strftime('%H:%M:%S %p')
                 speak(f"The current time is {current_time}")
+            elif "what is the date" in user_question:
+                current_date = strftime('%B %d, %Y')
+                speak(f"Today's date is {current_date}")
+            elif "What is my name?" in user_question:
+                speak(f"Your name is Marlene.")
             else:
                 # For other questions, use the question-answering pipeline
                 answer = answer_question(user_question)
