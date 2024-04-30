@@ -97,6 +97,7 @@ def control_lights():
     speak("Turning on the lights.")
 
 def control_music():
+     #TODO https://open.spotify.com/playlist/6BcTCXdu9q7JRF78x5Wga6?si=0a6119bdbf5847c4
     speak("Playing your favorite music.")
 
 def control_devices():
