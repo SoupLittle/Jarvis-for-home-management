@@ -34,9 +34,11 @@ Here are some features and enhancements planned for future releases:
 
 
 
-## Contributions
+## Links and documents i have used
 
-Contributions are welcome! If you have ideas, bug reports, or want to contribute new features, feel free to submit a pull request.
+https://developer.spotify.com/documentation/web-api
+https://www.javatpoint.com/spotify-api-python
+
 
 ## License
 
