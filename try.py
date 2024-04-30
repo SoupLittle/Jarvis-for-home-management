@@ -3,6 +3,8 @@ from time import strftime
 import threading
 import speech_recognition as sr
 import pyttsx3
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
 import firebase_admin
 from firebase_admin import credentials, storage
 from transformers import pipeline
@@ -13,6 +15,11 @@ firebase_admin.initialize_app(cred, {
     'storageBucket': 'gs://jarvis-6654a.appspot.com'
 })
 
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id='6e94e305d7904c2abe520e7919ab8ff1',
+                                               client_secret='5e69e14d3a7642fb886a8e59da60e3ad',
+                                               redirect_uri='https://souplittle.github.io/Jarvis-for-home-management/',
+                                               scope='user-read-playback-state,user-modify-playback-state'))
+
 def time():
     current_time = strftime('%H:%M:%S %p')
     time_label.config(text=current_time)
@@ -21,6 +28,9 @@ def time():
 def date():
     current_date = strftime('%B %d, %Y')
     date_label.config(text=current_date)
+    
+    
+    # Main Jarvis voice and listen
 
 def speak(text):
     engine = pyttsx3.init()
@@ -76,7 +86,13 @@ def handle_command(command):
                 answer = answer_question(user_question)
                 speak(answer)
 
-# Define functions for the added functionalities
+
+
+
+
+# Define functions for the functions
+
+
 def control_lights():
     speak("Turning on the lights.")
 
@@ -91,6 +107,9 @@ def main():
         command = listen()
         if command:
             handle_command(command)
+            
+            
+            
 
 # Create the main window
 root = tk.Tk()
