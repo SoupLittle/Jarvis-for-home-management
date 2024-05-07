@@ -28,9 +28,9 @@ def time():
 def date():
     current_date = strftime('%B %d, %Y')
     date_label.config(text=current_date)
-    
-    
-    # Main Jarvis voice and listen
+
+
+# Main Jarvis voice and listen
 
 def speak(text):
     engine = pyttsx3.init()
@@ -45,13 +45,11 @@ def listen():
             audio = recognizer.listen(source, timeout=5, phrase_time_limit=5)
             command = recognizer.recognize_google(audio).lower()
             print("You said:", command)
-            return command
+            handle_command(command)
         except sr.UnknownValueError:
             speak("Sorry, could not understand audio.")
-            return None
         except sr.RequestError as e:
             speak(f"Could not request results from Google Speech Recognition service; {e}")
-            return None
 
 def answer_question(question):
     qa_pipeline = pipeline("question-answering")
@@ -81,36 +79,34 @@ def handle_command(command):
                 speak(f"Today's date is {current_date}")
             elif "What is my name?" in user_question:
                 speak(f"Your name is Marlene.")
+            elif "play music" in command:
+                control_music()
             else:
                 # For other questions, use the question-answering pipeline
                 answer = answer_question(user_question)
                 speak(answer)
 
-
-
-
-
 # Define functions for the functions
-
 
 def control_lights():
     speak("Turning on the lights.")
 
 def control_music():
-     #TODO https://open.spotify.com/playlist/6BcTCXdu9q7JRF78x5Wga6?si=0a6119bdbf5847c4
+    # URI of the Spotify playlist
+    playlist_uri = "spotify:playlist:6BcTCXdu9q7JRF78x5Wga6"
+
+    sp.start_playback(context_uri=playlist_uri)
+    
     speak("Playing your favorite music.")
+
 
 def control_devices():
     speak("Controlling smart devices.")
 
 def main():
     while True:
-        command = listen()
-        if command:
-            handle_command(command)
-            
-            
-            
+        listen()
+
 
 # Create the main window
 root = tk.Tk()
@@ -136,5 +132,8 @@ devices_button.grid(row=4, column=0, pady=10)
 time()
 date()
 
-# Start the main loop
+# Start the main loop in a separate thread
+threading.Thread(target=main).start()
+
+# Start the tkinter main loop
 root.mainloop()
